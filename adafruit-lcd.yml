@@ -1,0 +1,78 @@
+---
+- hosts: pi
+  pre_tasks:
+    - name: Update apt
+      become: true
+      package:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+  tasks:
+    - name: Install Adafruit LCD APT
+      become: true
+      apt:
+        name:
+          - curl
+          - git-core
+          - gcc
+          - make
+          - libopenjp2-7
+          - zlib1g-dev
+          - libbz2-dev
+          - libreadline-dev
+          - libsqlite3-dev
+          - libssl-dev
+          - i2c-tools
+          - python3-pil
+          - python3-pip
+          - python3-venv
+
+    - name: Install Adafruit LCD
+      pip:
+        name:
+          - adafruit-circuitpython-ssd1306
+          - RPi.GPIO
+          - adafruit-blinka
+          - Pillow
+        virtualenv: /home/pi/venv
+        virtualenv_command: python3 -m venv
+
+    - name: raspi-config setup
+      become: true
+      script: stats_lcd/raspi_config_setup.sh
+
+    - name: Copy file with owner and permissions
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: pi
+        group: pi
+        mode: "755"
+      loop:
+        - src: stats_lcd/stats.py
+          dest: /home/pi/stats.py
+        - src: stats_lcd/run_stats.sh
+          dest: /home/pi/run_stats.sh
+
+    - name: Copy service file
+      become: true
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "755"
+      loop:
+        - src: stats_lcd/stats.service
+          dest: /etc/systemd/system/stats.service
+
+    - name: Delay shutting down the remote node
+      become: true
+      reboot:
+
+    - name: Start service stats, if not started
+      become: true
+      service:
+        name: stats.service
+        enabled: true
+        state: started

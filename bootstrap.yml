@@ -1,0 +1,22 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+    - name: Update apt
+      package:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+
+  tasks:
+    - name: Install all basic packages
+      package:
+        name:
+          - nmap
+          - emacs
+          - curl
+          - git-core
+          - tmux
+
+        state: latest
+        update_cache: yes
