@@ -1,0 +1,6 @@
+- name: Update dependencies
+  become: true
+  package:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day

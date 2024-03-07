@@ -27,6 +27,11 @@
           - python3-pip
           - python3-venv
 
+    - name: Creates directory
+      ansible.builtin.file:
+        path: /home/pi/stats_lcd
+        state: directory
+
     - name: Install Adafruit LCD
       pip:
         name:
@@ -34,7 +39,7 @@
           - RPi.GPIO
           - adafruit-blinka
           - Pillow
-        virtualenv: /home/pi/venv
+        virtualenv: /home/pi/stats_lcd/venv
         virtualenv_command: python3 -m venv
 
     - name: raspi-config setup
@@ -50,9 +55,9 @@
         mode: "755"
       loop:
         - src: stats_lcd/stats.py
-          dest: /home/pi/stats.py
+          dest: /home/pi/stats_lcd/stats.py
         - src: stats_lcd/run_stats.sh
-          dest: /home/pi/run_stats.sh
+          dest: /home/pi/stats_lcd/run_stats.sh
 
     - name: Copy service file
       become: true
@@ -66,7 +71,7 @@
         - src: stats_lcd/stats.service
           dest: /etc/systemd/system/stats.service
 
-    - name: Delay shutting down the remote node
+    - name: Restart the node
       become: true
       reboot:
 

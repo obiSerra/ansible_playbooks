@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-. /home/pi/venv/bin/activate
-python3 /home/pi/stats.py
+. /home/pi/stats_lcd/venv/bin/activate
+python3 /home/pi/stats_lcd/stats.py

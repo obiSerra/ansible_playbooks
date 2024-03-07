@@ -3,7 +3,7 @@ Description=stat service
 After=network-online.target
 
 [Service]
-ExecStart=/home/pi/run_stats.sh
+ExecStart=/home/pi/stats_lcd/run_stats.sh
 
 [Install]
 WantedBy=multi-user.target
