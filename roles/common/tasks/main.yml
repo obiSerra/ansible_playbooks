@@ -1,0 +1,23 @@
+- name: Install all basic packages
+  tags: always
+  become: true
+  package:
+    name:
+      - tmux
+      - emacs
+      - git
+      - zsh
+
+    state: latest
+    update_cache: yes
+
+- name: Min config for emacs
+  git:
+    repo: 'https://github.com/obiSerra/emacs-configs.git'
+    dest: ~/.emacs.d
+    version: min-config
+
+# - name: Update hostname
+#   hostname:
+#     name: "{{ hostname }}"
+#   when: hostname is defined

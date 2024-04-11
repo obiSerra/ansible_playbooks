@@ -1,0 +1,25 @@
+- name: Install all basic packages
+  tags: always
+  become: true
+  package:
+    name:
+      - zsh
+
+    state: latest
+    update_cache: yes
+
+- name: Install Oh My Zsh
+  tags: always
+  shell: yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  ignore_errors: true
+
+- name: Set Zsh as default
+  tags: always
+  become: true
+  shell: chsh -s $(which zsh)
+
+- name: Install Update template
+  ansible.builtin.lineinfile:
+    path: ~/.zshrc
+    regexp: "^ZSH_THEME"
+    line: ZSH_THEME="jonathan"
